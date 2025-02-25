@@ -3383,6 +3383,58 @@ Therefore, **==the time complexity of the entire KMP algorithm is O(n+m).==**
 
 
 
+#### Construct next arrays
+
+1. 初始化：
+
+定义两个指针i和j，==j指向前缀末尾位置，i指向后缀末尾位置==, 然后还要对next数组进行初始化赋值.
+
+next[i] 表示 i（包括i）之前最长相等的前后缀长度（其实就是j）, 所以初始化next[0] = j 。
+
+
+
+2. 处理前后缀不相同的情况
+
+因为j初始化为0，那么i就从1开始，进行s[i] 与 s[j]的比较。
+
+所以遍历模式串s的循环下标i 要从 1开始，代码：for (int i = 1; i < s.size(); i++) 
+
+如果 s[i] 与 s[j]不相同，也就是遇到 前后缀末尾不相同的情况，就要向前回退。
+
+next[j]就是记录着j（包括j）之前的子串的相同前后缀的长度。
+
+那么 s[i] 与 s[j] 不相同，就要找 j前一个元素在next数组里的值（就是next[j - 1]）。
+
+如果回退之后仍然不匹配，就要继续回退。
+
+回退的边界条件是j >=0。
+
+
+
+3. 处理前后缀相同的情况
+
+如果 s[i] 与 s[j] 相同，那么就同时向后移动i （for循环里）和j （增加操作），因为说明此时有相同的前后缀要继续往后匹配，同时还要将j（前缀的长度）赋给next[i], 因为next[i]要记录相同前后缀的长度。
+
+```python
+    void getNext(int* next, const string& s) {
+        int j = 0;
+        next[0] = 0;
+        for(int i = 1; i < s.size(); i++) {
+            while (j > 0 && s[i] != s[j]) { // j要保证大于0，因为下面有取j-1作为数组下标的操作
+                j = next[j - 1]; // 注意这里，是要找前一位的对应的回退位置了
+            }
+            if (s[i] == s[j]) {
+                j++;
+            }
+            next[i] = j;
+        }
+    }
+```
+
+![KMP精讲3](https://camo.githubusercontent.com/98a08768ee993164cde581887c338296260f62b50081fdaa28e9208677c1e9f9/68747470733a2f2f636f64652d7468696e6b696e672e63646e2e626365626f732e636f6d2f676966732f4b4d50254537254232254245254538254145254232332e676966)
+
+
+
 
 
 ### [ 28. Find the Index of the First Occurrence in a String](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/)
@@ -3391,9 +3443,100 @@ Given two strings `needle` and `haystack`, return the index of the first occurre
 
 
 
-### 
+#### match by next arrays
+
+Define two pointers, j for the start of the pattern string, i for the start of the text string.
+
+If s[i] cannot match t[j], j will find the next position to match in next arrays.
+
+If j points to the end of the next string, matching successful
 
 
+
+#### Solution
+
+==O(n + m) / O(m)==
+
+```python
+class Solution:
+    def getNext(self, next, s):
+        j = 0
+        next.append(0)
+        for i in range(1, len(s)):
+            while j > 0 and s[j] != s[i]:
+                j = next[j - 1]
+            if s[j] == s[i]:
+                j += 1
+            next.append(j)
+
+
+    def strStr(self, haystack: str, needle: str) -> int:
+        if len(needle) == 0:
+            return 0
+        next = []
+        self.getNext(next, needle)
+
+        j = 0
+        for i in range(len(haystack)):
+            while j > 0 and haystack[i] != needle[j]:
+                j = next[j - 1]
+            if needle[j] == haystack[i]:
+                j += 1
+            if j == len(needle):
+                return (i - len(needle) + 1)
+
+        return -1
+```
+
+```python
+# simple but rode solution
+
+		return haystack.find(needle)
+
+		try:
+         return haystack.index(needle)
+    except ValueError:
+         return -1
+```
+
+```c++
+class Solution {
+public:
+    void getNext(int* next, const string& s) {
+        int j = 0;
+        next[0] = 0;
+        for(int i = 1; i < s.size(); i++) {
+            while (j > 0 && s[i] != s[j]) {
+                j = next[j - 1];
+            }
+            if (s[i] == s[j]) {
+                j++;
+            }
+            next[i] = j;
+        }
+    }
+    int strStr(string haystack, string needle) {
+        if (needle.size() == 0) {
+            return 0;
+        }
+        vector<int> next(needle.size());
+        getNext(&next[0], needle);
+        int j = 0;
+        for (int i = 0; i < haystack.size(); i++) {
+            while(j > 0 && haystack[i] != needle[j]) {
+                j = next[j - 1];
+            }
+            if (haystack[i] == needle[j]) {
+                j++;
+            }
+            if (j == needle.size() ) {
+                return (i - needle.size() + 1);
+            }
+        }
+        return -1;
+    }
+};
+```
 
 
 
