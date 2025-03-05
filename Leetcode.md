@@ -2952,10 +2952,20 @@ class Solution:
 # method 2: Library function
 	s[:] = reversed(s)
   
-# method 3: range
+# method 3: Slice
+  s[:] = s[::-1]
+
+# method 4: self method
+	s.reverse()
+
+# method 5: Derived List
+	s[:] = [s[i] for i in range(len(s) - 1, -1, -1)]
+  
+# method 6: range
 	n = len(s)
   for i in range(n // 2):
     s[i], s[n - i - 1] = s[n - i - 1], s[i]
+ 
 ```
 
 ```c++
@@ -3177,7 +3187,7 @@ For example, given the input string "a1b2c3", the function should convert it to 
 
 
 
-#### Filling from back to front
+#### ==Filling from back to front==
 
 Filling from front to back is an O(n^2) algorithm, because each time an element is added, all elements after the added element must be moved backward as a whole.
 
@@ -3537,6 +3547,241 @@ public:
     }
 };
 ```
+
+
+
+
+
+### [459. Repeated Substring Pattern](https://leetcode.cn/problems/repeated-substring-pattern/description/)
+
+Given a string `s`, check if it can be constructed by taking a substring of it and appending multiple copies of the substring together.
+
+
+
+#### ==KMP Algorithm==
+
+**==如果这个字符串s是由重复子串组成，那么最长相等前后缀不包含的子串是字符串s的最小重复子串==。**
+
+<img src="/Users/annahuang/Library/Application Support/typora-user-images/image-20250304101428940.png" alt="image-20250304101428940" style="zoom:150%;" />
+
+<img src="https://camo.githubusercontent.com/c13fe6984f293409f2f8461e1b281c6915564d65c02e14327ac9a5db0ba09ab9/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303234303931333131303834312e706e67" alt="img" style="zoom:65%;" />
+
+
+
+1. **Important Analysis** 
+
+next 数组记录的就是最长相同前后缀， 如果 `next[len - 1] != 0`，则说明字符串有最长相同的前后缀（就是字符串里的前缀子串和后缀子串相同的最长长度）。
+
+最长相等前后缀的长度为：`next[len - 1]`。数组长度为：len。
+
+`len - next[len - 1]` 是最长相等前后缀不包含的子串的长度。
+
+如果`len % (len - next[len - 1] == 0` ，则说明数组的长度正好可以被 "最长相等前后缀不包含的子串的长度" 整除，说明该字符串有重复的子字符串。
+
+
+
+2. Example
+
+![459.重复的子字符串_1](https://camo.githubusercontent.com/0d2bac3cf5d4a2d2c5ba700ae4430df6cdfe452417e955db5a6f704f3aa5943b/68747470733a2f2f636f64652d7468696e6b696e672e63646e2e626365626f732e636f6d2f706963732f3435392e2545392538372538442545352541342538442545372539412538342545352541442539302545352541442539372545372541432541362545342542382542325f312e706e67)
+
+`next[len - 1] = 7`，`next[len - 1] + 1 = 8`，8就是此时字符串asdfasdfasdf的最长相同前后缀的长度。
+
+`(len - (next[len - 1] + 1))` 也就是： 12(字符串的长度) - 8(最长公共前后缀的长度) = 4， 为最长相同前后缀不包含的子串长度
+
+4可以被 12(字符串的长度) 整除，所以说明有重复的子字符串（asdf）。
+
+
+
+#### Mobile Matching
+
+When the internal of a string is constituted by duplicated substrings, then the constructure must be:
+
+<img src="https://camo.githubusercontent.com/ad810b4a089f271ba15f86357bf6c1c0426691d7bc409dcaa944c72e91ba13e9/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303232303732383130343531382e706e67" alt="图一" style="zoom:67%;" />
+
+Since there is the same substring in the front and the back, we combine "string + string", the the latter and the former substring will definitely form a string.
+
+![图二](https://camo.githubusercontent.com/1e360eb7ba304aa4c3f9a44f7850981e6068139d3483e4ffbb33ca289310e0fb/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303232303732383130343933312e706e67)
+
+Notes: we need to delete the first and the last character of "s + s", to avoid getting the original string.
+
+
+
+#### Solution
+
+==O(n) / O(n)==
+
+```python
+class Solution(object):
+    def getNext(self, next, string):
+        next[0] = 0
+        j = 0
+        for i in range(1, len(string)):
+            while j > 0 and string[i] != string[j]:
+                j = next[j - 1]
+            if string[i] == string[j]:
+                j += 1
+            next[i] = j
+
+    def repeatedSubstringPattern(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        if len(s) == 0:
+            return False
+        
+        next = [0] * len(s)
+        self.getNext(next, s)
+        length = len(s)
+        if next[length - 1] != 0 and length % (length - next[length - 1]) == 0:
+            return True
+        return False
+```
+
+```c++
+class Solution {
+public:
+    void getNext(int* next, string& s){
+        next[0] = 0;
+        int j = 0;
+        for(int i = 1; i < s.size(); i++){
+            while(j > 0 && s[i] != s[j]){
+                j = next[j - 1];
+            }
+            if(s[i] == s[j]){
+                j++;
+            }
+            next[i] = j;
+        }
+    }
+
+    bool repeatedSubstringPattern(string s) {
+        if(s.size() == 0){
+            return false;
+        }
+        int next[s.size()];
+        getNext(next, s);
+        int len = s.size();
+        if(next[len - 1] != 0 && len % (len - next[len - 1]) == 0 ){
+            return true;
+        }
+        return false;
+    }
+};
+```
+
+
+
+==O(n) / O(1)==
+
+```python
+class Solution:
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        n = len(s)
+        if n <= 1:
+            return False
+        ss = s[1:] + s[:-1] 
+        print(ss.find(s))              
+        return ss.find(s) != -1
+```
+
+```c++
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        string t = s + s;
+        t.erase(t.begin()); 
+        t.erase(t.end() - 1); // 掐头去尾
+        if (t.find(s) != std::string::npos) 
+          	return true; // r
+        return false;
+    }
+};
+```
+
+
+
+
+
+### [Summary](https://github.com/youngyangyang04/leetcode-master/blob/master/problems/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%80%BB%E7%BB%93.md)
+
+**==Double-Pointers Method / KMP Algorithms==**
+
+#### Most common string library functions
+
+1. **len(s)**
+   
+   **Time Complexity**: O(1)
+
+3. **s1 + s2**
+   
+   **Time Complexity**: O(len(s1) + len(s2))
+
+4. **s * n**
+   
+   - **Description**: Repeats the string `s` `n` times.
+   - **Time Complexity**: O(len(s) * n)
+   
+5. **s.find(sub)**
+   
+   - **Description**: Returns the lowest index in `s` where substring `sub` is found.
+   - **Time Complexity**: O(len(s) * len(sub))
+   
+6. **s.index(sub)**
+   - **Description**: Similar to `find()`, but raises a `ValueError` if `sub` is not found.
+   - **Time Complexity**: O(len(s) * len(sub))
+
+7. **s.count(sub)**
+   - **Description**: Returns the number of non-overlapping occurrences of substring `sub` in `s`.
+   - **Time Complexity**: O(len(s) * len(sub))
+
+8. **s.lower()**
+   
+   - **Description**: Returns a copy of the string `s` with all characters converted to lowercase.
+   - **Time Complexity**: O(len(s))
+   
+9. **s.upper()**
+   
+   - **Description**: Returns a copy of the string `s` with all characters converted to uppercase.
+   - **Time Complexity**: O(len(s))
+   
+10. **s.replace(old, new)**
+    - **Description**: Returns a copy of the string `s` with all occurrences of substring `old` replaced by `new`.
+    - **Time Complexity**: O(len(s) * len(old))
+
+11. **s.split(sep)**
+    - **Description**: Splits the string `s` into a list of substrings based on the separator `sep`.
+    - **Time Complexity**: O(len(s))
+
+12. **s.strip()**
+    - **Description**: Returns a copy of the string `s` with leading and trailing whitespace removed.
+    - **Time Complexity**: O(len(s))
+
+13. **s.join(iterable)**
+    - **Description**: Concatenates the strings in the iterable `iterable` with `s` as the separator.
+    - **Time Complexity**: O(len(s) * len(iterable))
+
+13. reversed(s)
+
+- **Time Complexity**: O( n )
+
+
+
+
+
+
+
+## 5. Double Pointers Method
+
+### [27. Remove Element](https://leetcode.cn/problems/remove-element/)
+
+
+
+### [344 Reverse String](https://leetcode.cn/problems/reverse-string/description/)
+
+
+
+### [Substitude Number](https://kamacoder.com/problempage.php?pid=1064)
 
 
 
