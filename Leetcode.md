@@ -58,9 +58,9 @@ def timeConversion(s):
 
 
 
-## Leetcode
 
-### Time Complexity
+
+## Time Complexity
 
 **<u>O(1)常数阶 < O(logn)对数阶 < O(n)线性阶 < O(nlogn)线性对数阶 < O(n^2)平方阶 < O(n^3)立方阶 < O(2^n)指数阶</u>**
 
@@ -203,7 +203,9 @@ Each recursive call is a multiplication operation, which is also a constant oper
 
 
 
-### 1. Arrays
+
+
+## 1. Arrays
 
 An array is a collection of data of the **same type** stored in **contiguous memory** space.
 
@@ -809,9 +811,7 @@ if __name__ == "__main__":
 
 
 
-
-
-### 2. Linked List
+## 2. Linked List
 
 #### Summary
 
@@ -1385,25 +1385,37 @@ private:
 
 
 
-
-
-#### 206. Reverse Linked List
+### [206. Reverse Linked List](https://leetcode.cn/problems/reverse-linked-list/description/)
 
 Given the `head` of a singly linked list, reverse the list, and return *the reversed list*.
 
-https://leetcode.cn/problems/reverse-linked-list/description/
+
+
+#### Double Pointers method 
+
+​	You just need to ==**change the next pointer of the linked list**==, and directly reverse the linked list without redefining a new linked list (consume more memory space).
+
+​	We need to ==use the current node and the previous node,and renew them== . These are two pointers.
 
 
 
-Solution:
+#### Reversion
 
-​	<u>You just need to **change the next pointer of the linked list**, and directly reverse the linked list without redefining a new linked list (consume more memory space).</u>
+​	<u>We use loop and continue to renew the curNode and preNode, so we consider the recursion</u>. Every reverse is a recursion.
+
+​	We revise the operation within the loop to a seperate function.
+
+​	The inputs are the variables its operation needs.
+
+​	Then return the next recursion. eg. return self.FuncName( x1, x2)
+
+​	The loop exit condition will be put in the beginning of this function, and return the final result.
 
 
 
-- **Double Pointers method : time complexity O( n ) / space complexity O( 1 )** 
+#### Solution
 
-We need to use the current node and the previous node, and renew them. These are two pointers, so we use double pointers method.
+- ==O( n ) / O( 1 )==
 
 ```python
 class Solution:
@@ -1418,15 +1430,13 @@ class Solution:
         return PreNode
 ```
 
-Notes: 
-
-​	<u>Why save curNode.next ?</u> 
+Notes:  **<u>Why save curNode.next ?</u>** 
 
 ​	because we're going to change the pointing of the cur->next.
 
 
 
-- **Reversion : time complexity O( n ) / space complexity O( n )** **
+- ==O( n ) / O( n )==
 
 ```python
 class Solution:
@@ -1441,10 +1451,6 @@ class Solution:
         cur.next = pre
         return self.reverse(tmp, cur)
 ```
-
-Notes: 
-
-​	We use loop and continue to renew the curNode and preNode, so we consider the recursion. Every reverse is a recursion.
 
 
 
@@ -1572,19 +1578,25 @@ public:
 
 
 
-#### 19. Remove Nth Node From End of List
+### [19. Remove Nth Node From End of List](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/)
 
 Given the `head` of a linked list, remove the `nth` node from the end of the list and return its head.
 
-https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/
+
+
+#### ==**Fast-Slow / Double Pointers**==
+
+If we want to delete the penultimate Nth node, let ==**fast pointer move n steps**==, then let ==fast and slow pointer move at the same time **until fast points to the end of the list**==. 
+
+To delete, we must <u>let the previous node points to the next node,</u> but **if we only have one node, we cannot specify the previous node, that's why we need dummy head node.**
+
+<u>Under this condition, we can let the slow pointer to previous node(dummy head), and then the fast pointer must move ( n + 1) steps</u>. When the fast pointer reaches the end / null pointer, we delete current node by the previous node.
 
 
 
-- ==**Fast-Slow / Double Pointers**==
+#### Solution
 
-If we want to ==delete the penultimate Nth node==, let ==**fast pointer move n steps**==, then let ==fast and slow pointer move at the same time **until fast points to the end of the list**==. Just delete the node that slow points to.
-
-To delete, we must <u>let the previous node points to the next node, so we can let the slow pointer to previous node, and then the fast pointer must move ( n + 1) steps</u>, that's why we need dummy head node.
+==O(n) / O(1)==
 
 ```python
 class Solution:
@@ -1601,10 +1613,6 @@ class Solution:
         slow.next = slow.next.next
         return dummy_head.next
 ```
-
-
-
-- in C++
 
 ```c++
 class Solution {
@@ -1852,7 +1860,7 @@ public:
 
 
 
-### 3. Hash Table
+## 3. Hash Table
 
 #### Basic knowledge
 
@@ -3785,7 +3793,9 @@ public:
 
 
 
+### [151. Reverse Words in a String](https://leetcode.cn/problems/reverse-words-in-a-string/)
 
 
 
+### [206. Reverse Linked List](https://leetcode.cn/problems/reverse-linked-list/description/)
 
