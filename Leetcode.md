@@ -1641,25 +1641,27 @@ public:
 
 
 
-#### 160. Intersection of Two Linked Lists
+### [160. Intersection of Two Linked Lists](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/)
 
 Given the heads of two singly linked-lists `headA` and `headB`, return *the node at which the two lists intersect*. If the two linked lists have no intersection at all, return `null`.
 
-https://leetcode.cn/problems/intersection-of-two-linked-lists/description/
 
 
+#### Idea
 
-- **Solution**
-
-The condition is that ==**the pointers are the same in both A and B**==, which is the beginning of the intersected part. 
-
-<img src="https://code-thinking.cdn.bcebos.com/pics/%E9%9D%A2%E8%AF%95%E9%A2%9802.07.%E9%93%BE%E8%A1%A8%E7%9B%B8%E4%BA%A4_1.png" alt="面试题02.07.链表相交_1" style="zoom: 65%;" />
+The intersection part means ==**the  beginning of the pointers in the intersection part are the same in both A and B**==
 
 1. We <u>calculate the length of two linked list, and the difference (b - a) of their length. The move curA (b - a) steps and now their tail are aligned.</u>
 
 <img src="https://code-thinking.cdn.bcebos.com/pics/%E9%9D%A2%E8%AF%95%E9%A2%9802.07.%E9%93%BE%E8%A1%A8%E7%9B%B8%E4%BA%A4_2.png" alt="面试题02.07.链表相交_2" style="zoom:65%;" />
 
 2. <u>Compare curA and curB. If not equal, move two until they are equal, the point is the intersection.</u> Otherwise return the null pointer.
+
+
+
+#### Solution
+
+==O(n + m) / o(1)==
 
 ```python
 class Solution:
@@ -1676,21 +1678,21 @@ class Solution:
             size_B += 1
             curNode = curNode.next
         
-        curA = headA
-        curB = headB
+        curA, curB = headA, headB
         if size_A > size_B:
             for i in range(size_A - size_B):
                 curA = curA.next
         else:
             for i in range(size_B - size_A):
                 curB = curB.next
-        while curA != curB and curA != None:
+                
+        while curA:
+            if curA == curB:
+                return curA
             curA = curA.next
             curB = curB.next
-        if curA:
-            return curA
-        else:
-            return None
+
+        return None
 ```
 
 
@@ -1702,39 +1704,40 @@ class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
         ListNode* curNode = headA;
-        int lenA = 0;
-        int lenB = 0;
+        int size_A = 0;
         while(curNode != nullptr){
-            lenA++;
-            curNode =curNode->next;
+            curNode = curNode->next;
+            size_A++;
         }
+
         curNode = headB;
+        int size_B = 0;
         while(curNode != nullptr){
-            lenB++;
-            curNode =curNode->next;
+            curNode = curNode->next;
+            size_B++;
         }
 
         ListNode* curA = headA;
         ListNode* curB = headB;
-        if(lenA > lenB){
-            for(int i = 0; i < lenA - lenB; i++){
+        if(size_A - size_B > 0){
+            for(int i = 0; i < size_A - size_B; i++){
                 curA = curA->next;
             }
         }
         else{
-            for(int i = 0; i < lenB - lenA; i++){
+            for(int i = 0; i < size_B - size_A; i++){
                 curB = curB->next;
-                }
+            }
         }
 
-        while(curA != curB && curA != nullptr){
+        while(curA != nullptr){
+            if(curA == curB){
+                return curA;
+            }
             curA = curA->next;
             curB = curB->next;
         }
-        if(curA == nullptr){
-            return NULL;
-        }
-        return curA; 
+        return nullptr;
     }
 };
 ```
@@ -1743,7 +1746,7 @@ public:
 
 
 
-#### 142. Linked List Cycle II
+### 142. Linked List Cycle II
 
 Given the `head` of a linked list, return *the node where the cycle begins. If there is no cycle, return* `null`.
 
@@ -2536,31 +2539,37 @@ public:
 
 
 
-#### 15. 3Sum
+### [15. 3Sum](https://leetcode.cn/problems/3sum/description/)
 
 Given an integer array nums, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.
 
 Notice that the solution set must not contain duplicate triplets.
 
-https://leetcode.cn/problems/3sum/description/
 
 
+#### ==Double-Pointers==
 
-- **==Double-Pointers   O(n^2) / O(1)==**
+1. Sort the numbers, if nums[0] > 0, empty result.
 
-Sort the numbers, if nums[0] > 0, empty result.
-
-We have three pointers, one is to do the for-loop. 
+2. We have three pointers, one is to do the for-loop. 
 
 ==The second is the i + 1 position, the third is the last one. These two are to do the Related-Pointer Method, the end condition is left = right==
 
-If nums[i] + nums[left] + nums[right] > 0, we need to move the right one to left to decrease the sum.
+3. If nums[i] + nums[left] + nums[right] > 0, we need to move the right one to left to decrease the sum.
 
 If nums[i] + nums[left] + nums[right] < 0, we need to move the left one to right to increase the sum.
 
 ![15.三数之和](https://camo.githubusercontent.com/195c8b882887df8176a7fc49b069b8a2696f1f47c962a9ebdc3fe961db473503/68747470733a2f2f636f64652d7468696e6b696e672e63646e2e626365626f732e636f6d2f676966732f31352e2545342542382538392545362539352542302545342542392538422545352539322538432e676966)
 
-==We need to remove duplicates, so skip i = i + 1, and for left pointer, skip left = left + 1.== 
+4. ==We need to remove duplicates, so skip i = i - 1, and for left pointer, skip left = left + 1.== 
+
+We can also skip right = right - 1, because for the same right value and i, there is only one corresponding left value to make sum = 0. If we skip duplicates, then while-loop will decrease to save memory.
+
+
+
+#### Solution
+
+==O(n ^ 2) / O(1)==
 
 ```python
 class Solution:
@@ -2600,8 +2609,6 @@ class Solution:
         return result
 ```
 
-We can also skip right = right - 1, because for the same right value and i, there is only one corresponding left value to make sum = 0. If we skip duplicates, then while-loop will decrease to save memory.
-
 
 
 - ==**Hash table( O(n^2) / O(n)**==  ) (difficult for duplicates)
@@ -2631,15 +2638,9 @@ class Solution:
         return result
 ```
 
-Delete duplicates:
-
-![image-20250209153944417](/Users/annahuang/Library/Application Support/typora-user-images/image-20250209153944417.png)
-
-![image-20250209154008015](/Users/annahuang/Library/Application Support/typora-user-images/image-20250209154008015.png)
 
 
-
-In C++: Hash and double-pointers
+- In C++:  double-pointers and hash table
 
 ```c++
 class Solution {
@@ -2743,9 +2744,17 @@ public:
 
 
 
+#### Delete duplicates
+
+![image-20250209153944417](/Users/annahuang/Library/Application Support/typora-user-images/image-20250209153944417.png)
+
+![image-20250209154008015](/Users/annahuang/Library/Application Support/typora-user-images/image-20250209154008015.png)
 
 
-#### 18. 4Sum 
+
+
+
+### [18. 4Sum](https://leetcode.cn/problems/4sum/)
 
 Given an array `nums` of `n` integers, return *an array of all the **unique** quadruplets* `[nums[a], nums[b], nums[c], nums[d]]` such that:
 
@@ -2755,19 +2764,31 @@ Given an array `nums` of `n` integers, return *an array of all the **unique** qu
 
 You may return the answer in **any order**.
 
-https://leetcode.cn/problems/4sum/
+
+
+#### Idea
+
+==4sum and 3sum are the same idea, both use the double pointer method, just add one more for-loop.==
 
 
 
-- ==4sum and 3sum are the same idea, both use the double pointer method, just add one more for-loop.==
+1. ==**Sort it, if num[i] >= 0  and  nums[i] > target,  break**.==
 
+nums[i] < 0, target > 0 : No break.  nums[i] < 0, target < 0 : not sure, no break.
 
-
-1. **Sort it, if target is not zero, then num[i] >= 0 + bigger than target, break**.
+nums[i] > 0, target > 0 : can break. nums[i] > 0, target < 0 : can break
 
 ![image-20250220101352052](/Users/annahuang/Library/Application Support/typora-user-images/image-20250220101352052.png)
 
-2. **unique** quadruplets: the four values cannot be duplicates.
+
+
+2. for the second loop, consider the sum of first two numbers and target.
+
+​	==if nums[i] + nums[j] > target and target > 0==
+
+
+
+3. **unique** quadruplets: the four values cannot be duplicates.
 
 ​	for pointer 1, remove nums[i] = num[i - 1], then must i > 0.
 
@@ -2777,6 +2798,8 @@ https://leetcode.cn/problems/4sum/
 
 ​	for pointer 4, remove nums[right] == nums[right - 1], then must left < right.
 
+
+
 3. a, b, c, d, distinct: no same index 
 
 ​	for pointer 2, different from pointer 1, so range (i+1, n-1)
@@ -2785,7 +2808,9 @@ https://leetcode.cn/problems/4sum/
 
 
 
-- **Time complexity: O(n^3) / Space complexity: O(1)**
+#### Solution
+
+==**O(n^3) /  O(1)**==
 
 ```python
 class Solution:
@@ -2794,7 +2819,7 @@ class Solution:
         n = len(nums)
         result = []
         for i in range(n):
-            if nums[i] > target and nums[i] > 0 and target > 0:
+            if nums[i] > target and nums[i] >= 0:
                 break
             if i > 0 and nums[i] == nums[i - 1]:
                 continue
@@ -2823,7 +2848,7 @@ class Solution:
 
 
 
-by dictionary:
+- **by dictionary**
 
 ```python
 class Solution(object):
@@ -2851,7 +2876,7 @@ class Solution(object):
 
 
 
-in C++:
+- in C++:
 
 ```c++
 class Solution {
@@ -2908,9 +2933,13 @@ public:
 
 
 
-#### Summary
+
+
+### Summary
 
 [Hash Table Summary](https://github.com/youngyangyang04/leetcode-master/blob/master/problems/%E5%93%88%E5%B8%8C%E8%A1%A8%E6%80%BB%E7%BB%93.md)
+
+
 
 
 
@@ -3799,3 +3828,14 @@ public:
 
 ### [206. Reverse Linked List](https://leetcode.cn/problems/reverse-linked-list/description/)
 
+
+
+### [160. Intersection of Two Linked Lists](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/)
+
+
+
+### [15. 3Sum](https://leetcode.cn/problems/3sum/description/)
+
+
+
+### [18. 4Sum](https://leetcode.cn/problems/4sum/)
