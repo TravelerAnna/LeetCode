@@ -10,19 +10,19 @@ df.shape: return arrays of the number of rows and the number of columns.
 
 
 
+
+
 ### .loc[ , ]
 
-**Slice the data by exact column or row index.**
+==**Slice the data by exact column or row index. **==
 
-eg. return column `X` and `Y` by the column `Name`  == 'Anna' in frame `students`.
+==**Not copy, just locate some values, do not change the original dataframe, but can change the value**==
 
 ```python
 students.loc[ students['Name'] == 'Anna', ['X', 'Y']]
 ```
 
-1. students['Name'] == 'Anna' : return bool value to select rows we need.
 
-2. ['X', 'Y'] : select columns we need.
 
 
 
@@ -74,11 +74,13 @@ axis = 0 / axis = 1
 
 
 
-### .sort_values( )
+### .sort_values(by=)
 
-by = [' '] : sort by specified column
+- **by = [' ']** : sort by specified column
 
-ascending = False : descending order
+- **ascending = False** : descending order
+
+
 
 
 
@@ -176,6 +178,40 @@ print(length)  # Output: 3
 
 
 
+### **.str**.**startswith**()
+
+==**prefix, start, end**==
+
+check if a string starts with a specified prefix. It returns `True` if the string starts with the specified prefix, otherwise it returns `False`.
+
+```python
+text = "Hello, world!"
+result = text.startswith("Hello")
+print(result)  # Output: True
+
+result = text.startswith("world", 7)
+print(result)  # Output: True
+
+result = text.startswith("world", 0, 5)
+print(result)  # Output: False
+```
+
+
+
+
+
+### ~ operator
+
+- bitwise NOT operator, which inverts all the bits of its operand. This operator is used primarily with integers.
+
+- The `~` operator inverts the boolean values, turning `True` into `False` and `False` into `True`.
+
+```python
+	~( employees['name'].str.startswith('M') )
+```
+
+
+
 
 
 
@@ -258,7 +294,7 @@ lengths = series.str.len()
 
 ## Pandas Exercise
 
-#### [183. Customers Who Never Order](https://leetcode.cn/problems/customers-who-never-order/)
+### [183. Customers Who Never Order](https://leetcode.cn/problems/customers-who-never-order/)
 
 ==If different columns in different tables need to be compared for filtering, and they are the same meaning, use merge to combine.==
 
@@ -273,6 +309,8 @@ def find_customers(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFram
 
 
 
+
+### [1873. Calculate Special Bonus](https://leetcode.cn/problems/calculate-special-bonus/)
 
 
 
