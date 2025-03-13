@@ -2,6 +2,22 @@
 
 
 
+## Data Structure
+
+### set( )
+
+
+
+
+
+Addition: **.add( )**
+
+
+
+
+
+
+
 ## Pandas Method
 
 ### .shape
@@ -133,11 +149,11 @@ determine whether it is null.
 
 
 
+
+
 ### .rename( )
 
 ==DataFrame.rename(mapper=None, index=None, columns=None, axis=None, copy=True, inplace=False, level=None, errors='ignore')==
-
-
 
 - **mapper**: dict-like or function, optional. A mapping of labels to new labels.
 - **index**: dict-like or function, optional. A mapping of index labels to new labels.
@@ -195,6 +211,16 @@ print(result)  # Output: True
 result = text.startswith("world", 0, 5)
 print(result)  # Output: False
 ```
+
+
+
+
+
+### **.str**.capitalize()
+
+​	Convert the string value in a column to a format where the first letter is uppercase/capitalized and the rest of the letters are lowercase.
+
+
 
 
 
@@ -286,7 +312,16 @@ lengths = series.str.len()
 
 
 
+### Order of Condition in loop 
 
+**If the first condition is False, the second condition will not be determined.**
+
+```python
+	fast = slow = headNode		# linked list {0} or { }
+	while fast and fast.next:
+```
+
+If fast.next first and the head is None, it's wrong.
 
 
 
