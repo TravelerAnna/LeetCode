@@ -1477,7 +1477,7 @@ public:
 
 
 
-#### 24. Swap Nodes in Pairs
+### 24. Swap Nodes in Pairs
 
 Given a linked list, swap every two adjacent nodes and return its head. You must solve the problem without modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
 
@@ -1746,45 +1746,47 @@ public:
 
 
 
-### 142. Linked List Cycle II
+### [142. Linked List Cycle II](https://leetcode.cn/problems/linked-list-cycle-ii/description/)
 
 Given the `head` of a linked list, return *the node where the cycle begins. If there is no cycle, return* `null`.
 
-There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the `next` pointer. Internally, `pos` is used to denote the index of the node that tail's `next` pointer is connected to (**0-indexed**). It is `-1` if there is no cycle. **Note that** `pos` **is not passed as a parameter**.
-
-**Do not modify** the linked list.
-
-https://leetcode.cn/problems/linked-list-cycle-ii/description/
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the `next` pointer. Internally, `pos` is used to denote the index of the node that tail's `next` pointer is connected to (**0-indexed**). It is `-1` if there is no cycle. **Note that** `pos` **is not passed as a parameter**. **Do not modify** the linked list.
 
 
 
-- **Solution**
+#### **==Fast-Slow pointers.==**
 
 1. How to determine whether it has a cycle ?
 
-**==Fast-Slow pointers.==**
+​	Start from the head node, ==every time the fast pointer moves 2 steps, the slow pointer moves 1 step. If they meet, it has an cycle.==
 
-Start from the head node, <u>every time the fast pointer moves 2 steps, the slow pointer moves 1 step. If they meet, it has an cycle.</u>
+​	Why? At first, the fast moves faster than the slow. If there exists a cycle, the fast will enter the cycle, and then the slow also enters. Now, it is the same as the fast chasing the slow from behind in the circle. 
 
-Why? **If they meet, it must in the cycle, because the fast moves 1 node relative to the slow.** We can draw a cycle, and let the fast starts chasing the slow, we will find all the situation is as following:
+​	**If they meet, it must in the cycle, because the fast moves 1 node relative to the slow.** We can draw a cycle, and let the fast starts chasing the slow, we will find all the situation is as following:
 
 <img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20210318162236720.png" alt="142环形链表1" style="zoom:67%;" />
 
-<img src="https://code-thinking.cdn.bcebos.com/gifs/141.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8.gif" alt="141.环形链表" style="zoom:90%;" />
+
 
 2. How to find the entry of the cycle?
 
-We assume the number of node between the head and entry is X , the number of node between the entry and node they meet is Y , the number of node between the node they meet and the entry again is Z.
+​	We assume the number of node between the head and entry is X , the number of node between the entry and node they meet is Y , the number of node between the node they meet and the entry again is Z.
 
 <img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20220925103433.png" alt="img" style="zoom:67%;" />
 
 <img src="/Users/annahuang/Library/Application Support/typora-user-images/image-20250102163032448.png" alt="image-20250102163032448" style="zoom: 50%;" />
 
-<img src="https://code-thinking.cdn.bcebos.com/gifs/142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II%EF%BC%88%E6%B1%82%E5%85%A5%E5%8F%A3%EF%BC%89.gif" alt="142.环形链表II（求入口）" style="zoom:75%;" />
+<img src="https://camo.githubusercontent.com/e33fff84749e53cde84abedd3c1be50b78b826549109f358e9578feabe9d36cb/68747470733a2f2f636f64652d7468696e6b696e672e63646e2e626365626f732e636f6d2f676966732f3134322e25453725384525414625453525424425413225453925393325424525453825413125413849492545462542432538382545362542312538322545352538352541352545352538462541332545462542432538392e676966" alt="142.环形链表II（求入口）" style="zoom:75%;" />
 
 <img src="/Users/annahuang/Library/Application Support/typora-user-images/image-20250102163253360.png" alt="image-20250102163253360" style="zoom:50%;" />
 
-**x = (n - 1) (y + z) + z.** 注意这个<u>x是slow指针走到入口的距离。如果相遇节点有一个指针，走z步也可以到这个入口，此时这两个指针相遇了，就找到入口了</u>。如果cycle了很多圈，就是相遇节点的这个指针在环里多走了n-1圈。
+​	**x = (n - 1) (y + z) + z.** 注意这个<u>x是slow指针走到入口的距离。如果相遇节点有一个指针，走z步也可以到这个入口，此时这两个指针相遇了，就找到入口了</u>。如果cycle了很多圈，就是相遇节点的这个指针在环里多走了n-1圈。
+
+
+
+#### **Solution**
+
+==**O(n) / O(1)**==
 
 ```python
 class Solution:
@@ -1796,14 +1798,13 @@ class Solution:
             slow = slow.next
 
             if fast == slow:
-                index1 = fast
-                index2 = head
+                slow = head
 
-                while index1 != index2:
-                    index1 = index1.next
-                    index2 = index2.next
-                
-                return index1
+                while slow != fast:
+                    slow = slow.next
+                    fast = fast.next
+                    
+                return slow
       
         return None
 ```
@@ -1825,8 +1826,6 @@ class Solution:
 
         return None
 ```
-
-Python is a good tool to do data analysis! Store and find it easily!
 
 
 
@@ -3830,6 +3829,10 @@ public:
 
 
 
+### [142. Linked List Cycle II](https://leetcode.cn/problems/linked-list-cycle-ii/description/)
+
+
+
 ### [160. Intersection of Two Linked Lists](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/)
 
 
@@ -3839,3 +3842,180 @@ public:
 
 
 ### [18. 4Sum](https://leetcode.cn/problems/4sum/)
+
+
+
+### [Summary](http://github.com/youngyangyang04/leetcode-master/blob/master/problems/%E5%8F%8C%E6%8C%87%E9%92%88%E6%80%BB%E7%BB%93.md)
+
+
+
+
+
+
+
+## 6. Stacks and Queues
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 7. Binary Tree
+
+<img src="https://camo.githubusercontent.com/29658d7fd1590dba2f611669a7816521267cb648e4cc06eaec397542e735ace3/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303234303432343137323233312e706e67" alt="二叉树大纲" style="zoom:90%;" />
+
+
+
+### Basic Knowledge
+
+#### Type
+
+1. ==**Full binary tree**==
+
+​	If a binary tree only has nodes with degree 0 and nodes with degree 2, and the nodes with degree 0 are on the same level, then the binary tree is a full binary tree.
+
+<img src="https://camo.githubusercontent.com/efe58385a12b0b85990db93e76529ae2ab370d290db97cbb8af3727042ee9c96/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303830363138353830353537362e706e67" alt="img" style="zoom:35%;" />
+
+This is a full binary tree, or it can be said to be **==a binary tree with a depth of k and 2^(k-1) nodes.==**
+
+
+
+2. ==**Complete binary tree**==
+
+​	In a complete binary tree, <u>except for the nodes at the bottom layer</u>, which may not be filled, <u>the number of nodes at each layer is filled to the maximum value.</u>
+
+​	<u>The nodes at the bottom layer</u> are concentrated at several positions on the left side of the layer (<u>continuous from left to right</u>).
+​	If the bottom layer is the hth layer (h starts at 1), then the layer contains 1~ 2^(h-1) nodes.
+
+<img src="https://camo.githubusercontent.com/b320cea0d7319b4ead399d7e24df1de94f8dbc7b958a3df942692df9e5d3ea2a/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303932303232313633383930332e706e67" alt="img" style="zoom:55%;" />
+
+3. ==**Binary search tree**==
+
+​	The binary search tree is an ordered tree with numerical values. 
+
+- <u>若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值；</u>
+- <u>若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值；</u>
+- <u>它的左、右子树也分别为二叉排序树(每个节点值都大于左节点，小于右节点)</u>
+
+<img src="https://camo.githubusercontent.com/1ed47a245358f6fce4064ea6e4867d650429ce47c07f2acb010ec60f3ef6bdf9/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303830363139303330343639332e706e67" alt="img" style="zoom:80%;" />
+
+
+
+4. Adelson-Velsky and Landis Tree / **==Balanced Binary Search Tree==**
+
+它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
+
+![img](https://camo.githubusercontent.com/fa45de5ecde342565e4c4688541886ac3a0d058a5b4295d637f5a1e704ba2011/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303830363139303531313936372e706e67)
+
+**==C++中map、set、multimap，multiset的底层实现都是平衡二叉搜索树==**，所以map、set的增删操作时间时间复杂度是==log(n)==，注意我这里没有说unordered_map、unordered_set，unordered_map、unordered_set底层实现是哈希表。
+
+
+
+
+
+#### Storage Type
+
+Binary trees can be stored in a ==**linked (pointers)**== or ==**sequential(arrays)**== manner.
+
+<img src="https://camo.githubusercontent.com/606ebdaaade982becced9a4918fa09d4888cd6d50943b596185ec74fb0bfe7cc/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f323032303039323031393535343631382e706e67" alt="img" style="zoom:50%;" />
+
+<img src="https://camo.githubusercontent.com/09d9875449b65d89d6f5475f7cdfc6f1fdf83174c5e1550c877a3c7d9f9288e9/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303932303230303432393435322e706e67" alt="img" style="zoom:45%;" />
+
+If the array index of the parent node is i, then its left child is i * 2 + 1, and its right child is i * 2 + 2.
+
+
+
+
+
+#### Traversal method
+
+1. **==Depth-first traversal==** 深度优先遍历
+
+​	Go deep first, and then go back when you encounter a leaf node. 
+
+- ==Pre-order traversal==    (Recursive method, iterative method)
+- ==In-order traversal==    (Recursive method, iterative method)
+- ==Post-order traversal==    (Recursive method, iterative method)
+
+
+
+​	**这里前中后序，其实指的就是中间节点的遍历顺序. **看如下中间节点的顺序，就可以发现，中间节点的顺序就是所谓的遍历方式.
+
+- 前序遍历：中左右 (  5 / 412 / 678， 4是中间节点在前)
+- 中序遍历：左中右 (  142 / 5 / 768，4是中间节点在中)
+- 后序遍历：左右中 (  124 / 786 / 5，4是中间节点在后)
+
+<img src="https://camo.githubusercontent.com/542d6395ba384d9175721ee9dc3322ad08aa6b7f39bea79bbdf6853f0549f9dd/68747470733a2f2f636f64652d7468696e6b696e672d313235333835353039332e66696c652e6d7971636c6f75642e636f6d2f706963732f32303230303830363139313130393839362e706e67" alt="img" style="zoom: 45%;" />
+
+
+
+2. ==**Breadth-first traversal **==广度优先遍历: 
+
+​	Traverse layer by layer. 
+
+- ==**Level traversal**==   (iterative method ) 
+
+
+
+Notes:
+
+​	==深度优先遍历一般使用递归的方式来实现==，也就是实现前中后序遍历，使用递归是比较方便的。**栈其实就是递归的一种实现结构**，也就说前中后序遍历的逻辑其实都是可以借助栈使用递归的方式来实现的。
+
+​	==广度优先遍历一般使用队列的方式来实现==，这也是队列先进先出的特点所决定的，因为需要先进先出的结构，才能一层一层的来遍历二叉树。
+
+
+
+
+
+#### Definition
+
+```python
+Class TreeNode:
+  def _init_ (self, val, left = None, right = None):
+    self.val = val
+    self.left = left
+    self.right = right
+```
+
+```c++
+struct TreeNode{
+  int val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode(int x): val(x), left(NULL). right(NULL) {}
+}
+```
+
+
+
+
+
+
+
