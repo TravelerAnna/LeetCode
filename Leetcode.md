@@ -205,13 +205,17 @@ Each recursive call is a multiplication operation, which is also a constant oper
 
 
 
+
+
 ## 1. Arrays
 
 An array is a collection of data of the **same type** stored in **contiguous memory** space.
 
 <img src="https://camo.githubusercontent.com/44ac0154ced4c18194937d6ce191f3940ead4569c326dab8daf6d3b04d737a36/68747470733a2f2f636f64652d7468696e6b696e672e63646e2e626365626f732e636f6d2f706963732f2545372541452539372545362542332539352545392538302539412545352538352542332545362539352542302545372542422538342e706e67" alt="算法通关数组" style="zoom:67%;" />
 
-#### **Summary**
+
+
+### Summary
 
 **==Loop Invariant Principle==**
 
@@ -221,25 +225,25 @@ An array is a collection of data of the **same type** stored in **contiguous mem
 
 
 
-#### 704. Binary Search
+### [704. Binary Search](https://leetcode.cn/problems/binary-search/)
 
 Given an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, then return its index. Otherwise, return `-1`.
 
 You must write an algorithm with `O(log n)` runtime complexity.
 
-https://leetcode.cn/problems/binary-search/
+
+
+#### Prerequisites for binary search.  
+
+==The array is an ordered array, and there are no duplicate elements in the array.==
+
+Because once there are duplicate elements, the element subscript returned by the binary search method may not be unique. 
 
 
 
-- Prerequisites for using the binary search method.  **O(log n)**
+#### Steps in Binary Search
 
-**<u>The array is an ordered array, and there are no duplicate elements in the array.</u>** Because once there are duplicate elements, the element subscript returned by the binary search method may not be unique. 
-
-
-
-- Method:
-
-1. Ensure your interval, left and right side, **middle(left + distance/2)**.
+1. Ensure your interval, left and right side, **middle(left + distance//2)**.
 
 2. There are generally two definitions of intervals: left closed and right closed, i.e. [left, right], or left closed and right open, i.e. [left, right).
 
@@ -247,19 +251,28 @@ https://leetcode.cn/problems/binary-search/
 
 4. Then determine how to move the middle, for left <= right, right = middle - 1, for left < right, right = middle, because right open and no meaning.
 
+
+
+#### Solution
+
+==**O(log n)**==
+
 ```python
-def search(self, nums: List[int], target: int) -> int:
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
         left, right = 0, len(nums) - 1
-        while(left <= right):
+        while left <= right:
             mid = left + (right - left) // 2
-            if (nums[mid] < target):
+            if nums[mid] < target:
                 left = mid + 1
-            elif (nums[mid] > target):
+            elif nums[mid] > target:
                 right = mid - 1
             else:
                 return mid
         return -1
 ```
+
+in C++ and suitable for right open interval:
 
 ```c++
 class Solution {
@@ -267,14 +280,16 @@ public:
     int search(vector<int>& nums, int target) {
         int left = 0;
         int right = nums.size() - 1;
-        while(left <= right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] < target)
+        int mid = left + (right - left) / 2;
+        while(left < right){
+            mid = left + (right - left) / 2;
+            if(nums[mid] < target){
                 left = mid + 1;
-            else if(nums[mid] > target)
-                right = mid - 1;
-            else
-                return mid;
+            }
+            else if(nums[mid] > target){
+                right = mid;
+            }
+            else { return mid; }
         }
         return -1;
     }
@@ -285,7 +300,7 @@ public:
 
 
 
-#### 27. Remove Element
+### [27. Remove Element](https://leetcode.cn/problems/remove-element/)
 
 Given an integer array `nums` and an integer `val`, remove all occurrences of `val` in `nums` [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm). The order of the elements may be changed. Then return *the number of elements in* `nums` *which are not equal to* `val`.
 
@@ -294,29 +309,33 @@ Consider the number of elements in `nums` which are not equal to `val` be `k`, t
 - Change the array `nums` such that the first `k` elements of `nums` contain the elements which are not equal to `val`. The remaining elements of `nums` are not important as well as the size of `nums`.
 - Return `k`.
 
-https://leetcode.cn/problems/remove-element/
 
 
+#### Double pointer method
 
-- **Double pointer method**(fast and slow pointer method)
-
-Use a fast pointer and a slow pointer to complete the work of two for-loops in one for-loop. 
+==Use a fast pointer and a slow pointer to complete the work of two for-loops in one for-loop.== 
 
 Fast pointer: Find the elements of the new array, the new array is the array without the target element.
-Slow pointer: Point to the position of the updated new array index
+
+Slow pointer: Point to the position of the updated new array index.
+
+
+
+#### Solution
+
+**==O(n)==**
 
 ```python
-def removeElement(self, nums: List[int], val: int) -> int:
-    fast = 0  # 快指针
-    slow = 0  # 慢指针
-    size = len(nums)
-    while fast < size:  # 不加等于是因为，a = size 时，nums[a] 会越界
-  # slow 用来收集不等于 val 的值，如果 fast 对应值不等于 val，则把它与 slow 替换
-         if nums[fast] != val:
-            nums[slow] = nums[fast]
-            slow += 1
-         fast += 1
-     return slow
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        fast = 0
+        slow = 0
+        while fast < len(nums):
+            if nums[fast] != val:
+                nums[slow] = nums[fast]
+                slow += 1
+            fast += 1
+        return slow
  
 def removeElement(self, nums: List[int], val: int) -> int:
         num_diff = 0		# slow pointer
@@ -326,6 +345,8 @@ def removeElement(self, nums: List[int], val: int) -> int:
                 num_diff += 1
         return num_diff
 ```
+
+in C++
 
 ```c++
 class Solution {
@@ -347,11 +368,11 @@ public:
 
 
 
-#### 977. Square of sorted array
+### [977. Square of sorted array](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
 Given an integer array `nums` sorted in **non-decreasing** order, return *an array of **the squares of each number** sorted in non-decreasing order*.
 
-https://leetcode.cn/problems/squares-of-a-sorted-array/
+
 
 
 
